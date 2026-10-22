@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080d1b">
+    <title>Orbit Lab — Two-Body Gravity</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Orbit Lab home">
+          <span class="brand-mark" aria-hidden="true"><span></span></span>
+          <span>ORBIT<span class="brand-light">LAB</span></span>
+        </a>
+        <span class="topbar-note"><span class="live-dot"></span> TWO-BODY GRAVITY</span>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <div class="eyebrow"><span></span> A GRAVITY PLAYGROUND</div>
+        <h1 id="page-title">A universe of <span>two.</span></h1>
+        <p>Set two worlds in motion and watch gravity write their story.</p>
+      </section>
+
+      <section class="workspace" aria-label="Interactive gravity simulation">
+        <div class="simulation-panel">
+          <div class="canvas-wrap">
+            <canvas id="simulation" aria-label="Animated two-body orbital simulation"></canvas>
+            <div class="canvas-label"><span class="live-dot"></span><span id="run-state">LIVE SIMULATION</span></div>
+            <div class="legend" aria-label="Simulation legend">
+              <span><i class="legend-dot planet-a"></i> BODY A</span>
+              <span><i class="legend-dot planet-b"></i> BODY B</span>
+              <span><i class="legend-line"></i> VELOCITY</span>
+            </div>
+            <div class="empty-message" id="empty-message" hidden>PAUSED IN THE VOID</div>
+          </div>
+          <div class="simulation-footer">
+            <div class="readout">
+              <span class="readout-label">SEPARATION</span>
+              <strong id="separation-value">—</strong>
+              <span class="readout-unit">units</span>
+            </div>
+            <div class="readout">
+              <span class="readout-label">SIMULATION TIME</span>
+              <strong id="time-value">0.0</strong>
+              <span class="readout-unit">units</span>
+            </div>
+            <div class="readout">
+              <span class="readout-label">TOTAL ENERGY</span>
+              <strong id="energy-value">—</strong>
+              <span class="readout-unit">units</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="controls-panel" aria-label="Simulation controls">
+          <div class="panel-heading">
+            <div>
+              <span class="section-kicker">FLIGHT DECK</span>
+              <h2>Shape the system</h2>
+            </div>
+            <span class="control-icon" aria-hidden="true">✳</span>
+          </div>
+
+          <div class="control-group">
+            <div class="control-title">
+              <label for="mass-a">Body A <span class="body-tag tag-a">PRIMARY</span></label>
+              <output id="mass-a-output" for="mass-a">5.0</output>
+            </div>
+            <input id="mass-a" type="range" min="1" max="10" step="0.5" value="5" class="range-a">
+            <div class="range-hints"><span>LIGHT</span><span>MASS <span class="unit">· UNITS</span></span><span>HEAVY</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-title">
+              <label for="mass-b">Body B <span class="body-tag tag-b">COMPANION</span></label>
+              <output id="mass-b-output" for="mass-b">3.0</output>
+            </div>
+            <input id="mass-b" type="range" min="1" max="10" step="0.5" value="3" class="range-b">
+            <div class="range-hints"><span>LIGHT</span><span>MASS <span class="unit">· UNITS</span></span><span>HEAVY</span></div>
+          </div>
+
+          <div class="control-group velocity-group">
+            <div class="control-title">
+              <label for="orbital-speed">Initial orbital speed</label>
+              <output id="orbital-speed-output" for="orbital-speed">0.191</output>
+            </div>
+            <input id="orbital-speed" type="range" min="0.035" max="0.35" step="0.001" value="0.191">
+            <div class="range-hints"><span>TIGHT ORBIT</span><span>RELATIVE SPEED</span><span>ESCAPE</span></div>
+          </div>
+
+          <div class="control-group speed-group">
+            <div class="control-title">
+              <label for="time-scale">Simulation speed</label>
+              <output id="time-scale-output" for="time-scale">1.0×</output>
+            </div>
+            <input id="time-scale" type="range" min="0.25" max="3" step="0.25" value="1">
+            <div class="range-hints"><span>0.25×</span><span>TIME WARP</span><span>3×</span></div>
+          </div>
+
+          <div class="toggle-list">
+            <label class="toggle-row" for="trails-toggle">
+              <span><span class="toggle-icon trail-icon">⌁</span>Orbital trails</span>
+              <input id="trails-toggle" type="checkbox" checked>
+              <span class="switch" aria-hidden="true"></span>
+            </label>
+            <label class="toggle-row" for="vectors-toggle">
+              <span><span class="toggle-icon vector-icon">↗</span>Velocity vectors</span>
+              <input id="vectors-toggle" type="checkbox" checked>
+              <span class="switch" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="play-button" class="button-primary" type="button"><span aria-hidden="true">Ⅱ</span> Pause</button>
+            <button id="reset-button" class="button-secondary" type="button"><span aria-hidden="true">↺</span> Reset</button>
+          </div>
+          <p class="reset-note">Changing mass or orbital speed resets the system.</p>
+        </aside>
+      </section>
+
+      <section class="explainer" aria-labelledby="physics-title">
+        <div class="explainer-heading">
+          <span class="section-kicker">THE PHYSICS, SIMPLY</span>
+          <h2 id="physics-title">Gravity does the math.</h2>
+          <p>Each body pulls on the other. No prescribed paths, just a pair of masses and the rules of the universe.</p>
+        </div>
+        <div class="equation-cards">
+          <article class="equation-card">
+            <span class="equation-number">01 / FORCE</span>
+            <div class="equation">F = <span>G m₁ m₂</span><b>/</b>r²</div>
+            <p>Newton’s law: the gravitational force grows with mass and weakens with the square of the distance.</p>
+          </article>
+          <article class="equation-card">
+            <span class="equation-number">02 / ACCELERATION</span>
+            <div class="equation">a₁ = <span>G m₂</span><b>r̂</b><i>/ r²</i></div>
+            <p>Divide force by each body’s own mass. Both accelerate toward their shared center of mass.</p>
+          </article>
+          <article class="equation-card">
+            <span class="equation-number">03 / MOTION</span>
+            <div class="equation">x, v <span>→</span> x′, v′</div>
+            <p>Velocity Verlet advances position and velocity in small steps for stable, energy-aware orbits.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>BUILT FOR THE CURIOUS <span class="footer-star">✳</span></span>
+        <span>G = 1 <i>·</i> SIMPLIFIED UNITS <i>·</i> ENDLESS POSSIBILITY</span>
+      </footer>
+    </main>
+  </body>
+</html>
